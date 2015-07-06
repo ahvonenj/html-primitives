@@ -104,16 +104,25 @@ $(document).ready(function()
     {
         var ihpoly = new PrimitivePolygon(
         [
-            { x: 1041, y: 489 },
-            { x: 1130, y: 493 },
-            { x: 1031, y: 376 },
-            { x: 1127, y: 381 }
-        ], 'black', 'black', 3, true);
+	{ x: 1080, y: 220 },
+	{ x: 1149, y: 277 },
+	{ x: 1192, y: 356 },
+	{ x: 1168, y: 462 },
+	{ x: 1109, y: 499 },
+	{ x: 1049, y: 451 },
+	{ x: 996, y: 486 },
+	{ x: 903, y: 431 },
+	{ x: 942, y: 391 },
+	{ x: 949, y: 328 },
+	{ x: 883, y: 276 },
+	{ x: 814, y: 173 },
+	{ x: 934, y: 120 }
+], 'black', 'black', 1, true);
         
         var ivl = setInterval(function()
         {
-            ihpoly.rotate(10);
-        }, 50);
+            ihpoly.rotate(2);
+        }, 10);
     }
     
     var clicks = [];

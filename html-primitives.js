@@ -26,20 +26,19 @@ PrimitiveBase.prototype.rotate = function(angle)
             break;
             
         case 'PrimitivePolygon':
-            var newpoints = [];
+            var newlines = [];
             var centroid = PrimitiveHelper.centroid(this.points);
             
-            for(var key in this.points)
+            for(var key in this.lines)
             {
-                var oldpoint = this.points[key];
-                var newpoint =
-                {
-                    x: PrimitiveHelper.rotate_point(oldpoint, { x: 0, y: 0 }, angle),
-                    y: PrimitiveHelper.rotate_point(oldpoint, { x: 0, y: 0 }, angle)
-                };
-                newpoints.push(newpoint);
+                var oldline = this.lines[key];
+                var newline = oldline;
+                newline.from = PrimitiveHelper.rotate_point(oldline.from, centroid, angle);
+                newline.to = PrimitiveHelper.rotate_point(oldline.to, centroid, angle);
+                newlines.push(newline);
             }
-            this.update(newpoints);
+            this.update(newlines);
+            
             break;
             
         default:
@@ -196,7 +195,9 @@ PrimitivePolygon.prototype.constructor = PrimitivePolygon;
 
 
 // Polygon methods
-PrimitivePolygon.prototype.update = function(newpoints, newfillcolor, newbordercolor, 
+
+// Rebuild should be used, if the points are modified
+PrimitivePolygon.prototype.rebuild = function(newpoints, newfillcolor, newbordercolor, 
                                             newborderthickness, newcheckintersections)
 {
     'use strict';
@@ -216,6 +217,32 @@ PrimitivePolygon.prototype.update = function(newpoints, newfillcolor, newborderc
     this.lines.length = 0;
     
     this.draw();
+    
+    return this;
+}
+
+// Update is used, if points stay the same, but lines are modified
+PrimitivePolygon.prototype.update = function(newlines, newfillcolor, newbordercolor, 
+                                            newborderthickness, newcheckintersections)
+{
+    'use strict';
+    
+    if(newlines.length !== this.lines.length)
+    {
+        console.log('%cPolygon newlines.length =/= oldlines.length!', 'background-color: #e74c3c; color: white;');
+        return;
+    }
+
+    this.fillcolor = newfillcolor || this.fillcolor;
+    this.bordercolor = newbordercolor || this.bordercolor;
+    this.borderthickness = newborderthickness || this.borderthickness;
+    this.checkintersections = newcheckintersections || this.checkintersections;
+    
+    for(var i = 0; i < this.lines.length; i++)
+    {
+        var line = this.lines[i];
+        line.update(newlines[i].from, newlines[i].to, this.bordercolor, this.borderthickness);
+    }
     
     return this;
 }
