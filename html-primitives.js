@@ -319,15 +319,64 @@ PrimitivePolygon.prototype.intersectcheck = function()
 
             if(PrimitiveHelper.intersectsNoEndPoints(l1, l2))
             {
-                //console.log('%cWarning: Defined polygon self-intersects!', 'background-color: #e67e22; color: white;');   
-                broken = true;
-                break;
+                console.log('%cWarning: Defined polygon self-intersects!', 'background-color: #e67e22; color: white;');   
+                //broken = true;
+                //break;
+                var isecpt = PrimitiveHelper.intersectpoint(l1, l2);
+                if(isecpt.intersects)
+                    new PrimitiveMark(isecpt.position, 'limegreen', 2, 5);
             }
+            
         }
 
         if(broken)
             break;
     }
+}
+
+function PrimitiveMark(position, color, size, epp)
+{
+    'use strict';
+    PrimitiveBase.call(this);
+    
+    this.position = position || { x: 0, y: 0 };
+    this.color = color || 'black';
+    this.size = size || 3;
+    
+    // "EndPointPad"
+    this.epp = epp || 5;
+    
+    this.endpoints = 
+    {
+        topleft:
+        {
+            x: this.position.x - this.epp,
+            y: this.position.y - this.epp
+        },
+        topright:
+        {
+            x: this.position.x + this.epp,
+            y: this.position.y - this.epp
+        },
+        bottomright:
+        {
+            x: this.position.x + this.epp,
+            y: this.position.y + this.epp
+        },
+        bottomleft:
+        {
+            x: this.position.x - this.epp,
+            y: this.position.y + this.epp
+        }
+    };
+    
+    this.markcomponents = 
+    [
+        new PrimitiveLine(this.endpoints.topleft, this.endpoints.bottomright, this.color, this.size),
+        new PrimitiveLine(this.endpoints.bottomleft, this.endpoints.topright, this.color, this.size)
+    ];
+    
+    return this; 
 }
 
 
@@ -473,8 +522,10 @@ var PrimitiveHelper =
         {
             x: null,
             y: null,
+            position: null,
             onLine1: false,
-            onLine2: false
+            onLine2: false,
+            intersects: false
         };
         
         denominator = ((line2.to.y - line2.from.y) * (line1.to.x - line1.from.x)) - ((line2.to.x - line2.from.x) * (line1.to.y - line1.from.y));
@@ -493,15 +544,19 @@ var PrimitiveHelper =
 
         result.x = line1.from.x + (a * (line1.to.x - line1.from.x));
         result.y = line1.from.y + (a * (line1.to.y - line1.from.y));
+        
+        result.position = { x: result.x, y: result.y };
 
         if (a > 0 && a < 1) 
         {
             result.onLine1 = true;
+            result.intersects = true;
         }
 
         if (b > 0 && b < 1) 
         {
             result.onLine2 = true;
+            result.intersects = true;
         }
 
         return result;
