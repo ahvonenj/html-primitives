@@ -127,7 +127,7 @@ PrimitiveLine.prototype.draw = function()
 }
 
 
-function PrimitiveRectangle(position, size, fillcolor, bordercolor, borderthickness)
+/*function PrimitiveRectangle(position, size, fillcolor, bordercolor, borderthickness)
 {
     'use strict';
     PrimitiveBase.call(this);
@@ -139,9 +139,10 @@ function PrimitiveRectangle(position, size, fillcolor, bordercolor, borderthickn
     this.fillcolor = fillcolor || 'black';
     this.bordercolor = bordercolor || 'black';
     this.borderthickness = borderthickness || 2;
+    this.lines = [];
     
     // Calculate and define rectangle corners from position and size
-    var corners = 
+    this.corners = 
     [
         { x: this.position.x, y: this.position.y }, // TopLeft
         { x: this.position.x + this.size.w, y: this.position.y }, // TopRight
@@ -150,15 +151,36 @@ function PrimitiveRectangle(position, size, fillcolor, bordercolor, borderthickn
     ];
     
     // Draw rectangle sides with lines
-    var top = new PrimitiveLine(corners[0], corners[1], this.bordercolor, this.borderthickness);
-    var right = new PrimitiveLine(corners[1], corners[2], this.bordercolor, this.borderthickness);
-    var bottom = new PrimitiveLine(corners[2], corners[3], this.bordercolor, this.borderthickness);
-    var left = new PrimitiveLine(corners[3], corners[0], this.bordercolor, this.borderthickness);
+    var top = new PrimitiveLine(this.corners[0], this.corners[1], this.bordercolor, this.borderthickness);
+    var right = new PrimitiveLine(this.corners[1], this.corners[2], this.bordercolor, this.borderthickness);
+    var bottom = new PrimitiveLine(this.corners[2], this.corners[3], this.bordercolor, this.borderthickness);
+    var left = new PrimitiveLine(this.corners[3], this.corners[0], this.bordercolor, this.borderthickness);
+    
+    this.lines.push(top);
+    this.lines.push(right);
+    this.lines.push(bottom);
+    this.lines.push(left);
 }
 
 // Extend base
 PrimitiveRectangle.prototype = Object.create(PrimitiveBase.prototype);
 PrimitiveRectangle.prototype.constructor = PrimitiveRectangle;
+
+// Rectangle methods
+PrimitiveRectangle.prototype.update = function()
+{
+    
+}
+
+PrimitiveRectangle.prototype.draw = function()
+{
+    
+}
+
+PrimitiveRectangle.prototype.redraw = function()
+{
+    
+}*/
 
 
 function PrimitivePolygon(points, fillcolor, bordercolor, borderthickness, checkintersections)
@@ -308,6 +330,41 @@ PrimitivePolygon.prototype.intersectcheck = function()
     }
 }
 
+
+function PrimitiveCircle(position, radius, bordercolor, borderthickness, pointcount)
+{
+    'use strict';
+    
+    var self = this;
+    
+    this.position = position || { x: 0, y: 0 };
+    this.radius = radius || 10;
+    this.bordercolor = bordercolor || 'black';
+    this.borderthickness = borderthickness || 2;
+    this.pointcount = pointcount || 14;
+    this.points = [];
+    
+    var c = 2 * Math.PI * radius;
+    var step = c / pointcount;
+    var center = { x: this.position.x + this.radius, y: this.position.y + this.radius };
+    
+    console.log(c, step, center, pointcount);
+    
+    for(var i = 0; i < pointcount; i++)
+    {
+        var o = step / radius;
+        
+        var p = 
+        {
+            x: center.x + Math.cos(i * o) * radius,
+            y: center.y + Math.sin(i * o) * radius
+        };
+        this.points.push(p);
+    }
+    
+    return new PrimitivePolygon(this.points, 'black', this.bordercolor, this.borderthickness, false);
+}
+
 var PrimitiveHelper = 
 {
     ccw: function(p1, p2, p3)
@@ -407,5 +464,46 @@ var PrimitiveHelper =
         centroid.y /= (6.0 * signedArea);
 
         return centroid;
+    },
+    
+    intersectpoint: function (line1, line2) 
+    {
+        // if the lines intersect, the result contains the x and y of the intersection (treating the lines as infinite) and booleans for whether line segment 1 or line segment 2 contain the point
+        var denominator, a, b, numerator1, numerator2, result = 
+        {
+            x: null,
+            y: null,
+            onLine1: false,
+            onLine2: false
+        };
+        
+        denominator = ((line2.to.y - line2.from.y) * (line1.to.x - line1.from.x)) - ((line2.to.x - line2.from.x) * (line1.to.y - line1.from.y));
+        
+        if (denominator == 0) 
+        {
+            return result;
+        }
+        
+        a = line1.from.y - line2.from.y;
+        b = line1.from.x - line2.from.x;
+        numerator1 = ((line2.to.x - line2.from.x) * a) - ((line2.to.y - line2.from.y) * b);
+        numerator2 = ((line1.to.x - line1.from.x) * a) - ((line1.to.y - line1.from.y) * b);
+        a = numerator1 / denominator;
+        b = numerator2 / denominator;
+
+        result.x = line1.from.x + (a * (line1.to.x - line1.from.x));
+        result.y = line1.from.y + (a * (line1.to.y - line1.from.y));
+
+        if (a > 0 && a < 1) 
+        {
+            result.onLine1 = true;
+        }
+
+        if (b > 0 && b < 1) 
+        {
+            result.onLine2 = true;
+        }
+
+        return result;
     }
 };

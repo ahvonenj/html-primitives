@@ -3,16 +3,19 @@ $(document).ready(function()
     console.log('init');
     
     // Test lines
-    //LineTest();
+    LineTest();
     
     // Test rectangles
     //RectangleTest();
     
     // Test polygons
-    //PolygonTest();
+    PolygonTest();
+    
+    // Test circles
+    CircleTest();
     
     // Test intersection
-    //IntersectTest();
+    IntersectTest();
     
     // Test rotation
     RotateTest();
@@ -73,6 +76,13 @@ $(document).ready(function()
         ], 'black', 'black', 3);
     }
     
+    function CircleTest()
+    {
+        var c1 = new PrimitiveCircle({ x: 100, y: 100 }, 150, 'black', 3, 32);   
+        var c2 = new PrimitiveCircle({ x: 450, y: 100 }, 80, 'blue', 1, 16);   
+        var c3 = new PrimitiveCircle({ x: 450, y: 450 }, 100, 'red', 6, 64);   
+    }
+    
     function IntersectTest()
     {
         var i1 = new PrimitiveLine({ x: 350, y: 350 }, { x: 450, y: 450 }, 'red', 2);
@@ -81,7 +91,10 @@ $(document).ready(function()
         var i3 = new PrimitiveLine({ x: 150, y: 150 }, { x: 250, y: 150 }, 'red', 2);
         var i4 = new PrimitiveLine({ x: 150, y: 155 }, { x: 250, y: 155 }, 'red', 2);
         
-        var i5 = new PrimitivePolygon(
+        var i5 = new PrimitiveLine({ x: 450, y: 150 }, { x: 650, y: 150 }, 'red', 2);
+        var i6 = new PrimitiveLine({ x: 550, y: 200 }, { x: 650, y: 240 }, 'red', 2);
+        
+        /*var i5 = new PrimitivePolygon(
         [
             { x: 736, y: 243 },
             { x: 833, y: 324 },
@@ -94,30 +107,40 @@ $(document).ready(function()
             { x: 1130, y: 493 },
             { x: 1031, y: 376 },
             { x: 1127, y: 381 }
-        ], 'black', 'black', 3, true);
+        ], 'black', 'black', 3, true);*/
         
         console.log('Intersect i1 & i2: ' + PrimitiveHelper.intersects(i1, i2));
         console.log('Intersect i3 & i4: ' + PrimitiveHelper.intersects(i3, i4));
+        console.log('Intersect i5 & i6: ' + PrimitiveHelper.intersects(i5, i6));
+        
+        console.log('IntersectPoint i1 & i2:');
+        console.log(PrimitiveHelper.intersectpoint(i1, i2));
+        
+        console.log('IntersectPoint i3 & i4:');
+        console.log(PrimitiveHelper.intersectpoint(i3, i4));
+        
+        console.log('IntersectPoint i5 & i6:');
+        console.log(PrimitiveHelper.intersectpoint(i5, i6));
     }
     
     function RotateTest()
     {
         var ihpoly = new PrimitivePolygon(
         [
-	{ x: 1080, y: 220 },
-	{ x: 1149, y: 277 },
-	{ x: 1192, y: 356 },
-	{ x: 1168, y: 462 },
-	{ x: 1109, y: 499 },
-	{ x: 1049, y: 451 },
-	{ x: 996, y: 486 },
-	{ x: 903, y: 431 },
-	{ x: 942, y: 391 },
-	{ x: 949, y: 328 },
-	{ x: 883, y: 276 },
-	{ x: 814, y: 173 },
-	{ x: 934, y: 120 }
-], 'black', 'black', 1, true);
+            { x: 1080, y: 220 },
+            { x: 1149, y: 277 },
+            { x: 1192, y: 356 },
+            { x: 1168, y: 462 },
+            { x: 1109, y: 499 },
+            { x: 1049, y: 451 },
+            { x: 996, y: 486 },
+            { x: 903, y: 431 },
+            { x: 942, y: 391 },
+            { x: 949, y: 328 },
+            { x: 883, y: 276 },
+            { x: 814, y: 173 },
+            { x: 934, y: 120 }
+        ], 'black', 'black', 1, true);
         
         var ivl = setInterval(function()
         {
