@@ -74,13 +74,63 @@ $(document).ready(function()
             { x: 833, y: 324 },
             { x: 725, y: 357 }
         ], 'black', 'black', 3);
+        
+        var poly4 = new PrimitivePolygon(
+        [
+        { x: 1356, y: 629 },
+        { x: 1510, y: 655 },
+        { x: 1522, y: 769 },
+        { x: 1424, y: 750 },
+        { x: 1479, y: 846 },
+        { x: 1413, y: 912 },
+        { x: 1309, y: 869 },
+        { x: 1304, y: 771 },
+        { x: 1207, y: 718 },
+        { x: 1217, y: 626 }
+        ], 'black', 'rgba(16, 64, 128, 1)', 2);
+        
+        var poly5 = new PrimitivePolygon(
+        [
+            { x: 1519, y: 314 },
+            { x: 1604, y: 401 },
+            { x: 1521, y: 414 },
+            { x: 1596, y: 308 },
+            { x: 1484, y: 342 },
+            { x: 1626, y: 451 }
+        ], 'black', 'rgba(255, 64, 54, 1)', 2, true);
+        
+        var poly6 = new PrimitivePolygon(
+        [
+            { x: 256, y: 743 },
+            { x: 508, y: 790 },
+            { x: 504, y: 904 },
+            { x: 403, y: 838 },
+            { x: 578, y: 750 },
+            { x: 386, y: 803 },
+            { x: 453, y: 670 },
+            { x: 333, y: 764 },
+            { x: 256, y: 616 },
+            { x: 165, y: 810 },
+            { x: 431, y: 947 },
+            { x: 87, y: 651 },
+            { x: 120, y: 918 },
+            { x: 329, y: 803 },
+            { x: 478, y: 685 },
+            { x: 661, y: 879 },
+            { x: 136, y: 708 }
+        ], 'black', 'rgba(255, 64, 54, 1)', 2, true);
     }
     
     function CircleTest()
     {
         var c1 = new PrimitiveCircle({ x: 100, y: 100 }, 150, 'black', 3, 32);   
         var c2 = new PrimitiveCircle({ x: 450, y: 100 }, 80, 'blue', 1, 16);   
-        var c3 = new PrimitiveCircle({ x: 450, y: 450 }, 100, 'red', 6, 64);   
+        var c3 = new PrimitiveCircle({ x: 450, y: 450 }, 100, 'red', 6, 16);  
+        
+        for(var i = 0; i < 10; i++)
+        {
+            new PrimitiveCircle({ x: 750 + i * 10, y: 650 + i * 10 }, 150 - i * 10, 'black', 1 + Math.sin(i), 32);   
+        }
     }
     
     function IntersectTest()
@@ -114,13 +164,25 @@ $(document).ready(function()
         console.log('Intersect i5 & i6: ' + PrimitiveHelper.intersects(i5, i6));
         
         console.log('IntersectPoint i1 & i2:');
-        console.log(PrimitiveHelper.intersectpoint(i1, i2));
+        var isecpt1 = PrimitiveHelper.intersectpoint(i1, i2);
+        console.log(isecpt1);
+        
+        if(isecpt1.onLine1 === true || isecpt1.onLine2 &&  true)
+            new PrimitiveMark({ x: isecpt1.x, y: isecpt1.y }, 'limegreen', 2, 10);
         
         console.log('IntersectPoint i3 & i4:');
-        console.log(PrimitiveHelper.intersectpoint(i3, i4));
+        var isecpt2 = PrimitiveHelper.intersectpoint(i3, i4);
+        console.log(isecpt2);
+        
+        if(isecpt2.onLine1 === true || isecpt2.onLine2 &&  true)
+            new PrimitiveMark({ x: isecpt2.x, y: isecpt2.y }, 'limegreen', 2, 10);
         
         console.log('IntersectPoint i5 & i6:');
-        console.log(PrimitiveHelper.intersectpoint(i5, i6));
+        var isecpt3 = PrimitiveHelper.intersectpoint(i5, i6);
+        console.log(isecpt3);
+        
+        if(isecpt3.onLine1 === true || isecpt3.onLine2 &&  true)
+            new PrimitiveMark({ x: isecpt3.x, y: isecpt3.y }, 'limegreen', 2, 10);
     }
     
     function RotateTest()
